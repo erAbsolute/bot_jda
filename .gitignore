@@ -1,0 +1,7 @@
+.vscode
+secrets
+/target/
+.metadata
+.classpath
+.settings
+.project
