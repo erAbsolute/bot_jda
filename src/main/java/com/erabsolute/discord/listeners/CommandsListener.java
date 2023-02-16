@@ -40,11 +40,9 @@ public class CommandsListener extends ListenerAdapter {
 			break;
 		case "qrfy":
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			;
 			try {
 				baos = info.generateQRCodeImage(event.getOptions().get(0).getAsString());
 			} catch (Exception e) {
-				logs.error(e.getMessage());
 				event.getHook().sendMessageEmbeds(info.errorEmbed(user, guild).build()).setEphemeral(true).queue();
 				break;
 			}
