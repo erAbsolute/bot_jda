@@ -36,17 +36,17 @@ public class CommandsListener extends ListenerAdapter {
 		event.deferReply().setEphemeral(true).queue();
 		switch (command) {
 		case "help":
-			logs.info(user.getName() + user.getDiscriminator() + " requested the command " + command);
+			System.out.println(user.getName() + "#" + user.getDiscriminator() + " requested the command " + command);
 			EmbedBuilder helpEmbed = info.help(user, guild);
 			event.getHook().sendMessageEmbeds(helpEmbed.build()).queue();
 			break;
 		case "ping":
-			logs.info(user.getName() + user.getDiscriminator() + " requested the command " + command);
+			System.out.println(user.getName() + "#" + user.getDiscriminator() + " requested the command " + command);
 			EmbedBuilder pingEmbed = info.ping(event.getJDA(), user, guild);
 			event.getHook().sendMessageEmbeds(pingEmbed.build()).setEphemeral(true).queue();
 			break;
 		case "qrfy":
-			logs.info(user.getName() + user.getDiscriminator() + " requested the command " + command);
+			System.out.println(user.getName() + "#" + user.getDiscriminator() + " requested the command " + command);
 			try (ByteArrayOutputStream baos = info.generateQRCodeImage(event.getOptions().get(0).getAsString());) {
 				EmbedBuilder qrfyEmbed = info.qrfy(user, guild);
 				event.getHook().sendMessageEmbeds(qrfyEmbed.build()).setEphemeral(true)
@@ -68,7 +68,7 @@ public class CommandsListener extends ListenerAdapter {
 		event.getGuild().updateCommands().addCommands(commandData).queue();
 	}
 
-	private static final Pattern quesoRegex = Pattern.compile("(?i).*(que|qe|q)\\b");
+	private static final Pattern quesoRegex = Pattern.compile("(?i).*(que|qe|q|ke|k)\\.?$");
 	private static final Pattern discordInvitePattern = Pattern.compile(
 			"(https?:\\/\\/)?(www\\.)?(discord\\.(gg|io|me|li)|discordapp\\.com\\/invite)\\/[a-zA-Z0-9]+",
 			Pattern.CASE_INSENSITIVE);
@@ -79,12 +79,15 @@ public class CommandsListener extends ListenerAdapter {
 		Matcher queso = quesoRegex.matcher(message);
 		Matcher reportInvite = discordInvitePattern.matcher(message);
 		if (queso.matches()) {
-			event.getMessage().reply("so");
+			event.getMessage().reply("so").queue();
+			return;
 		} else if (reportInvite.matches()) {
 			EmbedBuilder report = info.errorEmbed(event.getAuthor(), event.getGuild());
-			report.setDescription("El usuario " + event.getAuthor().getName() + event.getAuthor().getDiscriminator()
-					+ " ha posteado una invitación.");
+			report.setDescription("El usuario " + event.getAuthor().getName() + "#"
+					+ event.getAuthor().getDiscriminator() + " ha posteado una invitación.");
+			event.getMessage().delete().queue();
 			event.getChannel().sendMessageEmbeds(report.build()).queue();
+			return;
 		}
 
 	}
