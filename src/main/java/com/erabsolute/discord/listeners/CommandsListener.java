@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.erabsolute.discord.commands.Info;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -24,8 +21,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 public class CommandsListener extends ListenerAdapter {
-
-	private Logger logs = LoggerFactory.getLogger(CommandsListener.class);
 
 	private Info info = new Info();
 
@@ -43,17 +38,22 @@ public class CommandsListener extends ListenerAdapter {
 		case "ping":
 			System.out.println(user.getName() + "#" + user.getDiscriminator() + " requested the command " + command);
 			EmbedBuilder pingEmbed = info.ping(event.getJDA(), user, guild);
-			event.getHook().sendMessageEmbeds(pingEmbed.build()).setEphemeral(true).queue();
+			event.getHook().sendMessageEmbeds(pingEmbed.build()).queue();
+			break;
+		case "chatgpt":
+			System.out.println(user.getName() + "#" + user.getDiscriminator() + " requested the command " + command);
+			EmbedBuilder chatEmbed = info.chatGpt(user, guild, event.getOptions().get(0).getAsString());
+			event.getHook().sendMessageEmbeds(chatEmbed.build()).queue();
 			break;
 		case "qrfy":
 			System.out.println(user.getName() + "#" + user.getDiscriminator() + " requested the command " + command);
 			try (ByteArrayOutputStream baos = info.generateQRCodeImage(event.getOptions().get(0).getAsString());) {
 				EmbedBuilder qrfyEmbed = info.qrfy(user, guild);
-				event.getHook().sendMessageEmbeds(qrfyEmbed.build()).setEphemeral(true)
+				event.getHook().sendMessageEmbeds(qrfyEmbed.build())
 						.addFiles(FileUpload.fromData(baos.toByteArray(), "qr.png")).queue();
 				break;
 			} catch (Exception e) {
-				event.getHook().sendMessageEmbeds(info.errorEmbed(user, guild).build()).setEphemeral(true).queue();
+				event.getHook().sendMessageEmbeds(info.errorEmbed(user, guild).build()).queue();
 				break;
 			}
 		}
@@ -65,6 +65,8 @@ public class CommandsListener extends ListenerAdapter {
 		commandData.add(Commands.slash("ping", "Devuelve la latencia del bot."));
 		commandData.add(Commands.slash("qrfy", "Genera un código QR con el texto que le pases.")
 				.addOption(OptionType.STRING, "input", "Texto que queremos pasar a QR"));
+		commandData.add(Commands.slash("chatgpt", "Manda un mensaje a ChatGPT y devuelve la respuesta de este.")
+				.addOption(OptionType.STRING, "mensaje", "Mensaje para ChatGPT"));
 		event.getGuild().updateCommands().addCommands(commandData).queue();
 	}
 

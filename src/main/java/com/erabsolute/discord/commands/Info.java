@@ -5,7 +5,10 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -16,6 +19,10 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.theokanning.openai.completion.chat.ChatCompletionRequest;
+import com.theokanning.openai.completion.chat.ChatCompletionResult;
+import com.theokanning.openai.completion.chat.ChatMessage;
+import com.theokanning.openai.service.OpenAiService;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -52,6 +59,26 @@ public class Info {
 		EmbedBuilder embed = _getDefaultEmbed(user, guild);
 		embed.setImage("attachment://qr.png");
 		embed.setThumbnail(null);
+		return embed;
+	}
+
+	public EmbedBuilder chatGpt(User user, Guild guild, String message) {
+		EmbedBuilder embed = _getDefaultEmbed(user, guild);
+		OpenAiService chatGpt = new OpenAiService(System.getenv("openAiToken"), Duration.ofSeconds(180));
+		List<ChatMessage> messageList = new ArrayList<>();
+
+		messageList.add(new ChatMessage("user", message));
+		ChatCompletionRequest chatCompletionRequest = ChatCompletionRequest.builder().messages(messageList)
+				.model("gpt-3.5-turbo").build();
+		ChatCompletionResult chatResponse = chatGpt.createChatCompletion(chatCompletionRequest);
+		String chatResponseContent = "> ChatGPT dice:"
+				.concat(chatResponse.getChoices().get(0).getMessage().getContent());
+
+		embed.setThumbnail(null);
+		embed.setColor(Color.green);
+		embed.setDescription(chatResponseContent);
+
+		System.out.println(chatResponse.getUsage().getTotalTokens() + " tokens have been used on this call.");
 		return embed;
 	}
 
