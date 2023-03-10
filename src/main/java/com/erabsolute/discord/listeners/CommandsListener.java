@@ -72,7 +72,7 @@ public class CommandsListener extends ListenerAdapter {
 
 	private static final Pattern quesoRegex = Pattern.compile("(?i).*(que|qe|q|ke|k)\\.?$");
 	private static final Pattern discordInvitePattern = Pattern.compile(
-			"(https?:\\/\\/)?(www\\.)?(discord\\.(gg|io|me|li)|discordapp\\.com\\/invite)\\/[a-zA-Z0-9]+",
+			"(?i).*(https?:\\/\\/)?(www\\.)?(discord\\.(gg|io|me|li)|discordapp\\.com\\/invite)\\/[a-zA-Z0-9]+",
 			Pattern.CASE_INSENSITIVE);
 
 	@Override
