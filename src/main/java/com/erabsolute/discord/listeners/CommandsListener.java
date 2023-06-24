@@ -49,6 +49,11 @@ public class CommandsListener extends ListenerAdapter {
 			EmbedBuilder chatEmbed = info.chatGpt(user, guild, event.getOptions().get(0).getAsString());
 			event.getHook().sendMessageEmbeds(chatEmbed.build()).queue();
 			break;
+		case "info":
+			logger.info("{} requested the command {}", user.getName(), command);
+			EmbedBuilder infoEmbed = info.info(user, guild, event.getOptions().get(0).getAsString());
+			event.getHook().sendMessageEmbeds(infoEmbed.build()).queue();
+			break;
 		case "qrfy":
 			logger.info("{} requested the command {}", user.getName(), command);
 			try (ByteArrayOutputStream baos = info.generateQRCodeImage(event.getOptions().get(0).getAsString());) {
@@ -72,10 +77,11 @@ public class CommandsListener extends ListenerAdapter {
 				.addOption(OptionType.STRING, "input", "Texto que queremos pasar a QR"));
 		commandData.add(Commands.slash("chatgpt", "Manda un mensaje a ChatGPT y devuelve la respuesta de este.")
 				.addOption(OptionType.STRING, "mensaje", "Mensaje para ChatGPT"));
+		commandData.add(Commands.slash("info", "Muestra la información del usuario dado.")
+				.addOption(OptionType.STRING, "username", "Usuario que se quiere buscar"));
 		event.getGuild().updateCommands().addCommands(commandData).queue();
 	}
 
-	private static final Pattern quesoRegex = Pattern.compile("(?i).*(que|qe|q|ke|k)\\.?$");
 	private static final Pattern discordInvitePattern = Pattern.compile(
 			"(?i).*(https?:\\/\\/)?(www\\.)?(discord\\.(gg|io|me|li)|discordapp\\.com\\/invite)\\/[a-zA-Z0-9]+",
 			Pattern.CASE_INSENSITIVE);
@@ -83,12 +89,8 @@ public class CommandsListener extends ListenerAdapter {
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
 		String message = event.getMessage().getContentRaw();
-		Matcher queso = quesoRegex.matcher(message);
 		Matcher reportInvite = discordInvitePattern.matcher(message);
-		if (queso.matches()) {
-			event.getMessage().reply("so").queue();
-			return;
-		} else if (reportInvite.matches()) {
+		if (reportInvite.matches()) {
 			EmbedBuilder report = info.errorEmbed(event.getAuthor(), event.getGuild());
 			report.setDescription("El usuario " + event.getAuthor().getName() + "#"
 					+ event.getAuthor().getDiscriminator() + " ha posteado una invitación.");
