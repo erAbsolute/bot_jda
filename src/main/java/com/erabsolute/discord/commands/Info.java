@@ -13,6 +13,10 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -27,9 +31,12 @@ import com.theokanning.openai.service.OpenAiService;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 public class Info {
+
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public EmbedBuilder help(User user, Guild guild) {
 		EmbedBuilder embed = _getDefaultEmbed(user, guild);
@@ -78,7 +85,7 @@ public class Info {
 		embed.setColor(Color.green);
 		embed.setDescription(chatResponseContent);
 
-		System.out.println(chatResponse.getUsage().getTotalTokens() + " tokens have been used on this call.");
+		logger.info("{} tokens have been used on this call.", chatResponse.getUsage().getTotalTokens());
 		return embed;
 	}
 
@@ -103,6 +110,27 @@ public class Info {
 		return baos;
 	}
 
+	public EmbedBuilder info(User user, Guild guild, String userRequested) {
+		EmbedBuilder embed = _getDefaultEmbed(user, guild);
+		User userToPrint = user;
+		embed.setTitle("Info del usuario:");
+		
+		if (StringUtils.isNotBlank(userRequested)) {
+			List<Member> users = guild.getMembersByName(userRequested, true);
+			if (users.isEmpty()) {
+				embed.setColor(Color.red);
+				embed.setDescription("No se ha encontrado al usuario " + userRequested + ".");
+			} else {
+				userToPrint = users.get(0).getUser();
+			}
+		}
+		
+		embed.setThumbnail(userToPrint.getAvatarUrl());
+		embed.setDescription("> Usuario: " + userToPrint.getAsMention() +
+				"\n > ID del usuario " + userToPrint.getId());
+		return embed;
+	}
+	
 	public EmbedBuilder errorEmbed(User user, Guild guild) {
 		EmbedBuilder embed = _getDefaultEmbed(user, guild);
 		embed.setColor(Color.red);

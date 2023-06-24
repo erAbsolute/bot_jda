@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.erabsolute.discord.commands.Info;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -24,6 +27,8 @@ public class CommandsListener extends ListenerAdapter {
 
 	private Info info = new Info();
 
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
 		String command = event.getName();
 		User user = event.getUser();
@@ -31,28 +36,28 @@ public class CommandsListener extends ListenerAdapter {
 		event.deferReply().setEphemeral(true).queue();
 		switch (command) {
 		case "help":
-			System.out.println(user.getName() + "#" + user.getDiscriminator() + " requested the command " + command);
+			logger.info("{} requested the command {}", user.getName(), command);
 			EmbedBuilder helpEmbed = info.help(user, guild);
 			event.getHook().sendMessageEmbeds(helpEmbed.build()).queue();
 			break;
 		case "ping":
-			System.out.println(user.getName() + "#" + user.getDiscriminator() + " requested the command " + command);
 			EmbedBuilder pingEmbed = info.ping(event.getJDA(), user, guild);
 			event.getHook().sendMessageEmbeds(pingEmbed.build()).queue();
 			break;
 		case "chatgpt":
-			System.out.println(user.getName() + "#" + user.getDiscriminator() + " requested the command " + command);
+			logger.info("{} requested the command {}", user.getName(), command);
 			EmbedBuilder chatEmbed = info.chatGpt(user, guild, event.getOptions().get(0).getAsString());
 			event.getHook().sendMessageEmbeds(chatEmbed.build()).queue();
 			break;
 		case "qrfy":
-			System.out.println(user.getName() + "#" + user.getDiscriminator() + " requested the command " + command);
+			logger.info("{} requested the command {}", user.getName(), command);
 			try (ByteArrayOutputStream baos = info.generateQRCodeImage(event.getOptions().get(0).getAsString());) {
 				EmbedBuilder qrfyEmbed = info.qrfy(user, guild);
 				event.getHook().sendMessageEmbeds(qrfyEmbed.build())
 						.addFiles(FileUpload.fromData(baos.toByteArray(), "qr.png")).queue();
 				break;
 			} catch (Exception e) {
+				logger.info("{} crashed the command {}", user.getName(), command);
 				event.getHook().sendMessageEmbeds(info.errorEmbed(user, guild).build()).queue();
 				break;
 			}
