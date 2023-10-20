@@ -29,7 +29,6 @@
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
 			<version>5.0.0-beta.11</version>
-			<scope>package</scope>
 		</dependency>
 		<!--
 		https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
@@ -77,6 +76,12 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 			<version>4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<version>3.4.2</version>
+			<type>maven-plugin</type>
 		</dependency>
 	</dependencies>
 	<build>
