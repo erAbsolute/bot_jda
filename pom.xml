@@ -149,7 +149,7 @@
 								<goal>copy-resources</goal>
 							</goals>
 							<configuration>
-								<outputDirectory>${basedir}/target/App</outputDirectory>
+								<outputDirectory>${basedir}/target/bot</outputDirectory>
 								<resources>
 									<resource>
 										<directory>resources</directory>
@@ -193,7 +193,7 @@
 								<Class-Path>.</Class-Path>
 							</manifestEntries>
 						</archive>
-						<finalName>App/App</finalName>
+						<finalName>bot/bot</finalName>
 					</configuration>
 				</plugin>
 			</plugins>
