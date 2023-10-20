@@ -123,78 +123,27 @@
 					<version>3.0.0</version>
 				</plugin>
 				<plugin>
-					<!-- Build an executable JAR -->
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.1.0</version>
+					<artifactId>maven-assembly-plugin</artifactId>
 					<configuration>
+						<descriptorRefs>
+							<descriptorRef>jar-with-dependencies</descriptorRef>
+						</descriptorRefs>
 						<archive>
 							<manifest>
-								<addClasspath>true</addClasspath>
-								<classpathPrefix>lib/</classpathPrefix>
 								<mainClass>com.erabsolute.discord.App</mainClass>
 							</manifest>
 						</archive>
 					</configuration>
-				</plugin>
-
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.6</version>
 					<executions>
 						<execution>
-							<id>copy-resources</id>
-							<phase>validate</phase>
+							<id>make-assembly</id>
+							<phase>package</phase>
 							<goals>
-								<goal>copy-resources</goal>
+								<goal>single</goal>
 							</goals>
-							<configuration>
-								<outputDirectory>${basedir}/target/bot</outputDirectory>
-								<resources>
-									<resource>
-										<directory>resources</directory>
-										<filtering>true</filtering>
-									</resource>
-								</resources>
-							</configuration>
 						</execution>
 					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>copy-dependencies</id>
-							<phase>prepare-package</phase>
-							<goals>
-								<goal>copy-dependencies</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${project.build.directory}/bot/lib</outputDirectory>
-								<overWriteReleases>false</overWriteReleases>
-								<overWriteSnapshots>false</overWriteSnapshots>
-								<overWriteIfNewer>true</overWriteIfNewer>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<configuration>
-						<archive>
-							<manifest>
-								<addClasspath>true</addClasspath>
-								<classpathPrefix>lib/</classpathPrefix>
-								<mainClass>com.erabsolute.discord.App</mainClass>
-							</manifest>
-							<manifestEntries>
-								<Class-Path>.</Class-Path>
-							</manifestEntries>
-						</archive>
-						<finalName>bot/bot</finalName>
-					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
