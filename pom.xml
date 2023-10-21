@@ -143,15 +143,16 @@
 											<Main-Class>com.erabsolute.discord.App</Main-Class>
 											<Build-Number>28</Build-Number>
 										</manifestEntries>
-									</transformers>
-									<filters>
-										<excludeDefaults>false</excludeDefaults>
-									</filters>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</pluginManagement>
-		</build>
-	</project>
+									</transformer>
+								</transformers>
+								<filters>
+									<excludeDefaults>false</excludeDefaults>
+								</filters>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
