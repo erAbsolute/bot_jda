@@ -116,7 +116,7 @@ public class Info {
 		embed.setTitle("Info del usuario:");
 		
 		if (StringUtils.isNotBlank(userRequested)) {
-			List<Member> users = guild.getMembersByName(userRequested, true);
+			List<Member> users = guild.getMembersByEffectiveName(userRequested, true);
 			if (users.isEmpty()) {
 				embed.setColor(Color.red);
 				embed.setDescription("No se ha encontrado al usuario " + userRequested + ".");
