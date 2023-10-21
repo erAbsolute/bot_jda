@@ -144,9 +144,6 @@
 									</manifestEntries>
 								</transformer>
 							</transformers>
-							<filters>
-								<excludeDefaults>false</excludeDefaults>
-							</filters>
 						</configuration>
 					</execution>
 				</executions>
