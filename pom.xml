@@ -139,17 +139,19 @@
 							<configuration>
 								<transformers>
 									<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-										<mainClass>com.erabsolute.discord.App</mainClass>
-									</transformer>
-								</transformers>
-								<filters>
-									<excludeDefaults>false</excludeDefaults>
-								</filters>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
-</project>
+										<manifestEntries>
+											<Main-Class>com.erabsolute.discord.App</Main-Class>
+											<Build-Number>28</Build-Number>
+										</manifestEntries>
+									</transformers>
+									<filters>
+										<excludeDefaults>false</excludeDefaults>
+									</filters>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</pluginManagement>
+		</build>
+	</project>
